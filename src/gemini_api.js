@@ -32,11 +32,11 @@ const fats = variable(selectedData.fats)
 
 
 // prompt that is sent to Gemini
-const prompt = "Create a couple of meals from items only in this json file: " + menuData + ". The meal should be made using items offered only at the dining halls mentioned in the parenthesis, do not mention meal items that are not from the halls in parenthesis or dining halls that are not in the parenthesis (" + diningHall + 
-                ") which are represented as the dining_hall variable in the json. It should be for only items in the json file that say their meal_period is " + mealPeriod + ". Every item has to include in their dietary_restrioctions what is in these parenthesis (" + dietaryIncludes +
-                ") and cannot include in their dietary_restrictions anything in these parenthesis (" + dietaryExcludes + "). The meal should be around " + calories + 
-                " calories (kcal), should have around " + protein + " grams of protein, " + carbs + " grams of carbs, and " + fats + 
-                " grams of fats. Always format your answer using html styling that would work within a div. Always use html stylings using only using html tags like for headers and lists etc. in a way that would work if its inserted in a div. Again, only ouput meals that are associated with the dining halls given and the meal period given. Look through the entire json file before coming up with a response. The meal shouldn't be jerk chicken from Cafe 3";
+const prompt = "Sort the data in this file: " + menuData + "based on where the dining_hall is one of (" + diningHall +
+ ") and where dietary restrictions contain all (" + dietaryIncludes + "). Sort the data so that their meal_period is " + mealPeriod +
+ ". Now that u have a smaller subset of the data based only on what we are looking for, Create a couple of meals from the items where the meal is around " + calories + 
+ " calories (kcal), and has around " + protein + " grams of protein, around " + carbs + " grams of carbs, and " + fats + 
+ " grams of fats. Simply output the meals created by a combonation of the items offered, where they are and what meal_period they are, and their nutritional information. Always format your answer using html styling that would work within a div. Always use html stylings using only using html tags like for headers and lists etc. in a way that would work if its inserted in a div. Dont put html in the beginning and return meals" 
                 
 console.log(prompt)
 
