@@ -1,87 +1,78 @@
 import React, { useEffect, useState } from 'react';
 
-// Global variables to store selections and nutrient values
-export const selectedData = {
-  diningHall: '',
-  meal: '',
-  dietaryIncludes: [],
-  dietaryExcludes: [],
-  nutrients: {}
-};
-
-function SelectionPanel({ title, options, isInput, clearSelections }) {
+function SelectionPanel({ 
+  title, 
+  options, 
+  excludes, 
+  clearSelections, 
+  onChange, 
+  onChangeIncludes, 
+  onChangeExcludes, 
+  onChangeCalories, 
+  onChangeCarbs, 
+  onChangeProtein, 
+  onChangeFats, 
+  isMultiSelect 
+}) {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [nutrientValues, setNutrientValues] = useState({});
-
-  const isMultiSelect = title === 'Dietary Restriction' || title === 'Nutrients';
+  const [calories, setCalories] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [protein, setProtein] = useState('');
+  const [fats, setFats] = useState('');
 
   useEffect(() => {
     // Clear selections and input values when clearSelections is true
     if (clearSelections) {
       setSelectedOptions([]);
-      setNutrientValues({});
-      resetGlobalVariables();
+      setCalories('');
+      setCarbs('');
+      setProtein('');
+      setFats('');
     }
   }, [clearSelections]);
 
-  const resetGlobalVariables = () => {
-    if (title === 'Dining Halls') selectedData.diningHall = '';
-    if (title === 'Meal') selectedData.meal = '';
-    if (title === 'Dietary Restriction') {
-      selectedData.dietaryIncludes = [];
-      selectedData.dietaryExcludes = [];
-    }
-    if (title === 'Nutrients') selectedData.nutrients = {};
-  };
-
   const handleCheckboxChange = (option, type) => {
+    let updatedOptions;
     if (selectedOptions.includes(option)) {
-      // Deselect the option
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
+      updatedOptions = selectedOptions.filter((item) => item !== option);
+    } else {
+      updatedOptions = [...selectedOptions, option];
+    }
+    setSelectedOptions(updatedOptions);
 
-      // Update global variables for dietary restrictions
-      if (title === 'Dietary Restriction') {
-        if (type === 'includes') {
-          selectedData.dietaryIncludes = selectedData.dietaryIncludes.filter((item) => item !== option);
-        } else {
-          selectedData.dietaryExcludes = selectedData.dietaryExcludes.filter((item) => item !== option);
-        }
-      }
-
-      // Update global variables for nutrients
-      if (title === 'Nutrients') {
-        const updatedNutrients = { ...nutrientValues };
-        delete updatedNutrients[option];
-        selectedData.nutrients = updatedNutrients;
-        setNutrientValues(updatedNutrients);
+    // Update includes/excludes selections
+    if (title === 'Dietary Restriction') {
+      if (type === 'includes') {
+        onChangeIncludes && onChangeIncludes(updatedOptions);
+      } else {
+        onChangeExcludes && onChangeExcludes(updatedOptions);
       }
     } else {
-      // Select the option
-      setSelectedOptions([...selectedOptions, option]);
-
-      // Update global variables for dietary restrictions
-      if (title === 'Dietary Restriction') {
-        if (type === 'includes') {
-          selectedData.dietaryIncludes.push(option);
-        } else {
-          selectedData.dietaryExcludes.push(option);
-        }
-      }
+      onChange && onChange(updatedOptions[0]);
     }
   };
 
   const handleRadioChange = (option) => {
     setSelectedOptions([option]);
-    if (title === 'Dining Halls') selectedData.diningHall = option;
-    if (title === 'Meal') selectedData.meal = option;
+    onChange && onChange(option);
   };
 
   const handleInputChange = (option, value) => {
     // Update the value for nutrients, allowing only numeric input
     if (/^\d*$/.test(value)) {
-      const updatedNutrients = { ...nutrientValues, [option]: value };
-      setNutrientValues(updatedNutrients);
-      selectedData.nutrients = updatedNutrients;
+      if (option === 'Calories (kcal):') {
+        setCalories(value);
+        onChangeCalories && onChangeCalories(value);
+      } else if (option === 'Carbs (g):') {
+        setCarbs(value);
+        onChangeCarbs && onChangeCarbs(value);
+      } else if (option === 'Protein (g):') {
+        setProtein(value);
+        onChangeProtein && onChangeProtein(value);
+      } else if (option === 'Fats (g):') {
+        setFats(value);
+        onChangeFats && onChangeFats(value);
+      }
     }
   };
 
@@ -90,10 +81,9 @@ function SelectionPanel({ title, options, isInput, clearSelections }) {
       <h2>{title}</h2>
       {title === 'Dietary Restriction' ? (
         <div className="dietary-columns">
-          {/* Includes Column */}
           <div className="dietary-column">
             <h3>Includes</h3>
-            {['Halal', 'Vegan', 'Vegetarian', 'Kosher'].map((option, index) => (
+            {options.map((option, index) => (
               <div key={index} className="option">
                 <input
                   type="checkbox"
@@ -106,11 +96,9 @@ function SelectionPanel({ title, options, isInput, clearSelections }) {
               </div>
             ))}
           </div>
-
-          {/* Excludes Column */}
           <div className="dietary-column">
             <h3>Excludes</h3>
-            {['Milk', 'Gluten', 'Peanuts', 'Tree nuts'].map((option, index) => (
+            {excludes.map((option, index) => (
               <div key={index} className="option">
                 <input
                   type="checkbox"
@@ -142,7 +130,12 @@ function SelectionPanel({ title, options, isInput, clearSelections }) {
                 type="text"
                 className="nutrient-input"
                 placeholder="Enter amount"
-                value={nutrientValues[option] || ''}
+                value={
+                  option === 'Calories (kcal):' ? calories : 
+                  option === 'Carbs (g):' ? carbs : 
+                  option === 'Protein (g):' ? protein : 
+                  fats
+                }
                 onChange={(e) => handleInputChange(option, e.target.value)}
               />
             )}
