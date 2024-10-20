@@ -6,16 +6,20 @@ import './App.css';
 
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
+  const [generateMeal, setGenerateMeal] = useState(false);
 
   const handleMealGeneration = () => {
-    // Placeholder for meal generation logic
-    alert("Meal generated based on your selections!");
+    // Trigger meal generation
+    setGenerateMeal(true);
 
     // Clear all selections after generating the meal
     setClearSelections(true);
 
-    // Reset clearSelections state after a brief delay
-    setTimeout(() => setClearSelections(false), 0);
+    // Reset states after a brief delay
+    setTimeout(() => {
+      setClearSelections(false);
+      setGenerateMeal(false);
+    }, 100);
   };
 
   return (
@@ -44,13 +48,11 @@ function App() {
           clearSelections={clearSelections}
         />
       </div>
-
       {/* Generate Meal Button */}
       <button onClick={handleMealGeneration} className="generate-meal-button">
         Generate Meal
       </button>
-
-      <RecommendedMeal />
+      <RecommendedMeal generateMeal={generateMeal} />
     </div>
   );
 }
