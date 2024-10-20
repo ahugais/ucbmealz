@@ -8,6 +8,7 @@ function RecommendedMeal({ generateMeal }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // text generation func is called when button is clicked
     if (generateMeal) {
       fetchMealPlan();
     }
@@ -16,13 +17,13 @@ function RecommendedMeal({ generateMeal }) {
   async function fetchMealPlan() {
     setIsLoading(true);
     try {
-      if (!process.env.REACT_APP_API_KEY) {
+      if (!process.env.REACT_APP_API_KEY) { // checks if api key exists
         throw new Error("API key not found in browser environment");
       }
-      const result = await mealPlan();
-      setMeal(result);
+      const result = await mealPlan(); // result is declared with generate text
+      setMeal(result); // sets meal variable to result
       setError(null);
-    } catch (error) {
+    } catch (error) { // error checking if fetching was unsuccessful
       console.error('Error fetching meal plan:', error);
       setMeal('Failed to load meal plan.');
       setError(error.message || 'An unknown error occurred');
@@ -38,7 +39,7 @@ function RecommendedMeal({ generateMeal }) {
         {isLoading ? 'Generating meal...' : meal}
       </div>
       {error && (
-        <div className="error-message">
+        <div className="error-message"> {/* prints error details if error occurs */}
           Error details: {error}
           <p>Please check the console for more information.</p>
         </div>

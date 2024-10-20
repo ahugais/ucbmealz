@@ -57,6 +57,8 @@ function App() {
       <button onClick={handleMealGeneration} className="generate-meal-button">
         Generate Meal
       </button>
+
+      {/* sets generateMeal to true when button is clicked (refer to RecommendedMeal.js) */}
       <RecommendedMeal generateMeal={generateMeal} />
     </div>
   );
