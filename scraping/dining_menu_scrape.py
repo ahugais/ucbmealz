@@ -13,6 +13,7 @@ import json
 
 conn = sqlite3.connect('dining_hall_data.db')
 cursor = conn.cursor()
+
 # Create a list to store all data
 menu_data = []
 
@@ -171,16 +172,18 @@ def scrape_data():
     # Close the browser
     driver.quit()
     print(menu_data)
-    json_string = json.dumps(menu_data)
 
-    # Write json data to a file
-    with open("sample.json", "w") as outfile:
-        outfile.write(json_string)
 
-# Function to schedule theç scraping task
+# Function to schedule the scraping task
 def job():
     print("Running the scraping task...")
     scrape_data()
+    # Serialize the list of dictionaries to a JSON formatted string
+    tester = json.dumps(menu_data, indent=4)
+    # Write the serialized string to a file
+    with open("src/meal_data.json", "w") as outfile:
+        outfile.write(tester)
+
 
 # Schedule the job to run daily at 12:01 AM
 schedule.every().day.at("00:01").do(job)
