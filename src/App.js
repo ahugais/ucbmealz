@@ -18,6 +18,7 @@ export const selectedData = {
 
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
+  const [generateMeal, setGenerateMeal] = useState(false);
   const [diningHall, setDiningHall] = useState([]);
   const [meal, setMeal] = useState('');
   const [dietaryIncludes, setDietaryIncludes] = useState([]);
@@ -39,12 +40,15 @@ function App() {
     selectedData.fats = fats;
 
     console.log('Selected Data:', selectedData); // For debugging
-
+    setGenerateMeal(true);
     // Clear all selections after generating the meal
     setClearSelections(true);
 
     // Reset states after a brief delay
-    setTimeout(() => setClearSelections(false), 100);
+    setTimeout(() => {
+      setClearSelections(false);
+      setGenerateMeal(false);
+    }, 100);
   };
 
   return (
@@ -91,7 +95,7 @@ function App() {
         Generate Meal
       </button>
 
-      <RecommendedMeal />
+      <RecommendedMeal generateMeal={generateMeal} />
     </div>
   );
 }
