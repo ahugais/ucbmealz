@@ -1,4 +1,3 @@
-// import Gemini API
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // setting up API to generate text
