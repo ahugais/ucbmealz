@@ -7,9 +7,21 @@ from selenium.common.exceptions import TimeoutException
 import time
 import re
 import sqlite3
+import os
+import schedule
 
 conn = sqlite3.connect('dining_hall_data.db')
 cursor = conn.cursor()
+print(os.path.abspath('dining_hall_data.db'))
+
+# Function to clear the table
+def clear_table():
+    try:
+        cursor.execute("DELETE FROM scraped_data")
+        conn.commit()
+        print(f"Table cleared successfully")
+    except sqlite3.Error as e:
+        print(f"Error clearing table: {e}")
 
 # Function to insert data into SQLite
 def insert_data(instance_data):
@@ -35,6 +47,9 @@ def insert_data(instance_data):
 
 # Function to perform the scraping
 def scrape_data():
+    # Clear the table before inserting new data
+    clear_table()
+
     # Set up WebDriver
     driver = webdriver.Chrome()
 
@@ -158,7 +173,15 @@ def scrape_data():
     driver.quit()
     print(menu_data)
 
-# Call the scraping function
-scrape_data()
+# Function to schedule the scraping task
+def job():
+    print("Running the scraping task...")
+    scrape_data()
 
+# Schedule the job to run daily at 12:01 AM
+schedule.every().day.at("00:01").do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)  # Check every minute if there is a pending job
 
