@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { menu } = require("./test.js");
+const { menu } = require("./jsonData.js");
 
 // setting up API to generate text
 const API_KEY = process.env.API_KEY || process.env.REACT_APP_API_KEY;
