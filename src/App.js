@@ -4,8 +4,11 @@ import SelectionPanel from './components/SelectionPanel';
 import RecommendedMeal from './components/RecommendedMeal';
 import './App.css';
 
+
+
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
+
 
   const handleMealGeneration = () => {
     // Placeholder for meal generation logic
@@ -49,8 +52,7 @@ function App() {
       <button onClick={handleMealGeneration} className="generate-meal-button">
         Generate Meal
       </button>
-
-      <RecommendedMeal />
+        <RecommendedMeal />
     </div>
   );
 }
