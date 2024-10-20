@@ -40,7 +40,7 @@ function App() {
         />
         <SelectionPanel
           title="Nutrients"
-          options={['Calories:', 'Carbs/g:', 'Protein/g:', 'Fats/g:']}
+          options={['Calories (kcal):', 'Carbs (g):', 'Protein (g):', 'Fats (g):']}
           clearSelections={clearSelections}
         />
       </div>
