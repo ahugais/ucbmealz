@@ -173,7 +173,7 @@ def scrape_data():
     driver.quit()
     print(menu_data)
 
-# Function to schedule the scraping task
+# Function to schedule theç scraping task
 def job():
     print("Running the scraping task...")
     scrape_data()
