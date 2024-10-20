@@ -9,10 +9,13 @@ import re
 import sqlite3
 import os
 import schedule
+import json
 
 conn = sqlite3.connect('dining_hall_data.db')
 cursor = conn.cursor()
-print(os.path.abspath('dining_hall_data.db'))
+
+# Create a list to store all data
+menu_data = []
 
 # Function to clear the table
 def clear_table():
@@ -56,9 +59,6 @@ def scrape_data():
     # Open the UC Berkeley dining menus page
     url = 'https://dining.berkeley.edu/menus/'
     driver.get(url)
-
-    # Create a list to store all data
-    menu_data = []
 
     # Define a list of dining halls to scrape
     dining_halls = driver.find_elements(By.CLASS_NAME, 'cafe-title')
@@ -173,10 +173,12 @@ def scrape_data():
     driver.quit()
     print(menu_data)
 
+
 # Function to schedule the scraping task
 def job():
     print("Running the scraping task...")
     scrape_data()
+
 
 # Schedule the job to run daily at 12:01 AM
 schedule.every().day.at("00:01").do(job)
