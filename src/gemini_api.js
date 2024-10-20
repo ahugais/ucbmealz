@@ -32,11 +32,13 @@ const fats = variable(selectedData.fats)
 
 
 // prompt that is sent to Gemini
-const prompt = "Create a couple of meals from items only in this json file:" + menuData + ". The meal should be made using items offered only at the halls in parenthesis (" + diningHall + 
-                ") which are represented as the dining_hall variable in the json. It should be for only items in the json file that say their meal_period is " + mealPeriod + ". Every item should include these (" + dietaryIncludes +
-                ") and should not include any of these (" + dietaryExcludes + "). The meal should be around " + calories + 
+const prompt = "Create a couple of meals from items only in this json file: " + menuData + ". The meal should be made using items offered only at the dining halls mentioned in the parenthesis, do not mention meal items that are not from the halls in parenthesis or dining halls that are not in the parenthesis (" + diningHall + 
+                ") which are represented as the dining_hall variable in the json. It should be for only items in the json file that say their meal_period is " + mealPeriod + ". Every item has to include in their dietary_restrioctions what is in these parenthesis (" + dietaryIncludes +
+                ") and cannot include in their dietary_restrictions anything in these parenthesis (" + dietaryExcludes + "). The meal should be around " + calories + 
                 " calories (kcal), should have around " + protein + " grams of protein, " + carbs + " grams of carbs, and " + fats + 
-                " grams of fats. Always format your answer using html styling that would work within a div. Always use html stylings using only using html tags like for headers and lists etc. in a way that would work if its inserted in a div";
+                " grams of fats. Always format your answer using html styling that would work within a div. Always use html stylings using only using html tags like for headers and lists etc. in a way that would work if its inserted in a div. Again, only ouput meals that are associated with the dining halls given and the meal period given. Look through the entire json file before coming up with a response. The meal shouldn't be jerk chicken from Cafe 3";
+                
+console.log(prompt)
 
 // function that creates the text generation output
 async function mealPlan() {
