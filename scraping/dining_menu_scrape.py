@@ -177,7 +177,7 @@ def scrape_data():
     with open("sample.json", "w") as outfile:
         outfile.write(json_string)
 
-# Function to schedule the scraping task
+# Function to schedule theç scraping task
 def job():
     print("Running the scraping task...")
     scrape_data()
