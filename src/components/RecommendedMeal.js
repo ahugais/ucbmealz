@@ -36,7 +36,9 @@ function RecommendedMeal({ generateMeal }) {
     <div className="recommended-meal">
       <h2>Recommended Meal</h2>
       <div className="meal-content">
-        {isLoading ? 'Generating meal...' : meal}
+        {isLoading ? 'Generating meal...' : (
+          <div dangerouslySetInnerHTML={{ __html: meal }} /> // Renders HTML from the meal string
+        )}
       </div>
       {error && (
         <div className="error-message"> {/* prints error details if error occurs */}

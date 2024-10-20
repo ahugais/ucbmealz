@@ -10,7 +10,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 //const menuData = JSON.stringify(menu());
 const menuData = menu();
 // prompt that is sent to Gemini
-const prompt = "Create a meal plan with 50 grams of protein and 15 grams of carbs using data from this json file:" + menuData + ". Limit to around 50 words and also mention the location which is identified by 'dining_hall'.";
+const prompt = "create a few healthy meals from the food using data from this json file:" + menuData + ". Limit to around 50 words and also mention the location which is identified by 'dining_hall'. always use html stylings using only using html tags like for headers and lists etc. in a way that would work if its inserted in a div";
 
 // function that creates the text generation output
 async function mealPlan() {
