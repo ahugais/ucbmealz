@@ -6,7 +6,7 @@ import './App.css';
 
 // Global variables to store selections and nutrient values
 export const selectedData = {
-  diningHall: '',
+  diningHall: ["Crossroads", "Cafe 3", "Clark Kerr", "Foothill"],
   meal: '',
   dietaryIncludes: [],
   dietaryExcludes: [],
@@ -18,7 +18,7 @@ export const selectedData = {
 
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
-  const [diningHall, setDiningHall] = useState('');
+  const [diningHall, setDiningHall] = useState([]);
   const [meal, setMeal] = useState('');
   const [dietaryIncludes, setDietaryIncludes] = useState([]);
   const [dietaryExcludes, setDietaryExcludes] = useState([]);
@@ -56,7 +56,7 @@ function App() {
           options={['Crossroads', 'Cafe 3', 'Clark Kerr', 'Foothill']}
           clearSelections={clearSelections}
           onChange={setDiningHall}
-          isMultiSelect={false}
+          isMultiSelect={true}
         />
         <SelectionPanel
           title="Meal"

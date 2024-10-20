@@ -39,19 +39,21 @@ function SelectionPanel({
       updatedOptions = [...selectedOptions, option];
     }
     setSelectedOptions(updatedOptions);
-
-    // Update includes/excludes selections
-    if (title === 'Dietary Restriction') {
+  
+    // Check if the title is 'Dining Halls' and update it as an array
+    if (title === 'Dining Halls') {
+      onChange && onChange(updatedOptions); // Pass the updated array to the App component
+    } else if (title === 'Dietary Restriction') {
       if (type === 'includes') {
         onChangeIncludes && onChangeIncludes(updatedOptions);
       } else {
         onChangeExcludes && onChangeExcludes(updatedOptions);
       }
     } else {
-      onChange && onChange(updatedOptions[0]);
+      onChange && onChange(updatedOptions[0]); // For single select options like 'Meal'
     }
   };
-
+  
   const handleRadioChange = (option) => {
     setSelectedOptions([option]);
     onChange && onChange(option);
