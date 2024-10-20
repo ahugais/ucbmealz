@@ -1,6 +1,5 @@
 import React from 'react';
-import './Header.js';
-import logo from '../assets/logo.png';  // Adjust the path based on where you saved the image
+import logo from '../assets/logo.png';
 
 function Header() {
   return (

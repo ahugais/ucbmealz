@@ -1,79 +1,148 @@
 import React, { useEffect, useState } from 'react';
-import './SelectionPanel.js';
 
-function SelectionPanel({ title, options, isInput, clearSelections }) {
+function SelectionPanel({ 
+  title, 
+  options, 
+  excludes, 
+  clearSelections, 
+  onChange, 
+  onChangeIncludes, 
+  onChangeExcludes, 
+  onChangeCalories, 
+  onChangeCarbs, 
+  onChangeProtein, 
+  onChangeFats, 
+  isMultiSelect 
+}) {
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [nutrientValues, setNutrientValues] = useState({});
-
-  const isMultiSelect = title === 'Dietary Restriction' || title === 'Nutrients';
+  const [calories, setCalories] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [protein, setProtein] = useState('');
+  const [fats, setFats] = useState('');
 
   useEffect(() => {
     // Clear selections and input values when clearSelections is true
     if (clearSelections) {
       setSelectedOptions([]);
-      setNutrientValues({});
+      setCalories('');
+      setCarbs('');
+      setProtein('');
+      setFats('');
     }
   }, [clearSelections]);
 
-  const handleCheckboxChange = (option) => {
+  const handleCheckboxChange = (option, type) => {
+    let updatedOptions;
     if (selectedOptions.includes(option)) {
-      // Deselect the option and remove its value
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
-      setNutrientValues((prevValues) => {
-        const updatedValues = { ...prevValues };
-        delete updatedValues[option];
-        return updatedValues;
-      });
+      updatedOptions = selectedOptions.filter((item) => item !== option);
     } else {
-      // Select the option and add it to the selected options
-      setSelectedOptions([...selectedOptions, option]);
+      updatedOptions = [...selectedOptions, option];
+    }
+    setSelectedOptions(updatedOptions);
+  
+    // Check if the title is 'Dining Halls' and update it as an array
+    if (title === 'Dining Halls') {
+      onChange && onChange(updatedOptions); // Pass the updated array to the App component
+    } else if (title === 'Dietary Restriction') {
+      if (type === 'includes') {
+        onChangeIncludes && onChangeIncludes(updatedOptions);
+      } else {
+        onChangeExcludes && onChangeExcludes(updatedOptions);
+      }
+    } else {
+      onChange && onChange(updatedOptions[0]); // For single select options like 'Meal'
     }
   };
-
+  
   const handleRadioChange = (option) => {
     setSelectedOptions([option]);
+    onChange && onChange(option);
   };
 
   const handleInputChange = (option, value) => {
-    // Update the value for the specific nutrient
-    if (/^\d*$/.test(value)) {  // Allow only numeric input
-      setNutrientValues({
-        ...nutrientValues,
-        [option]: value
-      });
+    // Update the value for nutrients, allowing only numeric input
+    if (/^\d*$/.test(value)) {
+      if (option === 'Calories (kcal):') {
+        setCalories(value);
+        onChangeCalories && onChangeCalories(value);
+      } else if (option === 'Carbs (g):') {
+        setCarbs(value);
+        onChangeCarbs && onChangeCarbs(value);
+      } else if (option === 'Protein (g):') {
+        setProtein(value);
+        onChangeProtein && onChangeProtein(value);
+      } else if (option === 'Fats (g):') {
+        setFats(value);
+        onChangeFats && onChangeFats(value);
+      }
     }
   };
 
   return (
     <div className="panel">
       <h2>{title}</h2>
-      {options.map((option, index) => (
-        <div key={index} className="option">
-          <input
-            type={isMultiSelect ? 'checkbox' : 'radio'}
-            id={option}
-            name={title}
-            checked={selectedOptions.includes(option)}
-            onChange={() =>
-              isMultiSelect ? handleCheckboxChange(option) : handleRadioChange(option)
-            }
-          />
-          <label htmlFor={option}>{option}</label>
-
-          {/* Show the input box for nutrients if selected */}
-          {title === 'Nutrients' && selectedOptions.includes(option) && (
-            <input
-              type="text"
-              className="nutrient-input"
-              placeholder="Enter amount"
-              value={nutrientValues[option] || ''}
-              onChange={(e) => handleInputChange(option, e.target.value)}
-            />
-          )}
+      {title === 'Dietary Restriction' ? (
+        <div className="dietary-columns">
+          <div className="dietary-column">
+            <h3>Includes</h3>
+            {options.map((option, index) => (
+              <div key={index} className="option">
+                <input
+                  type="checkbox"
+                  id={option}
+                  name="includes"
+                  checked={selectedOptions.includes(option)}
+                  onChange={() => handleCheckboxChange(option, 'includes')}
+                />
+                <label htmlFor={option}>{option}</label>
+              </div>
+            ))}
+          </div>
+          <div className="dietary-column">
+            <h3>Excludes</h3>
+            {excludes.map((option, index) => (
+              <div key={index} className="option">
+                <input
+                  type="checkbox"
+                  id={option}
+                  name="excludes"
+                  checked={selectedOptions.includes(option)}
+                  onChange={() => handleCheckboxChange(option, 'excludes')}
+                />
+                <label htmlFor={option}>{option}</label>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-      {isInput && selectedOptions.includes('Other:') && (
-        <input type="text" className="other-input" placeholder="Specify here..." />
+      ) : (
+        options.map((option, index) => (
+          <div key={index} className="option">
+            <input
+              type={isMultiSelect ? 'checkbox' : 'radio'}
+              id={option}
+              name={title}
+              checked={selectedOptions.includes(option)}
+              onChange={() => isMultiSelect ? handleCheckboxChange(option) : handleRadioChange(option)}
+            />
+            <label htmlFor={option}>{option}</label>
+
+            {/* Display nutrient input box when selected */}
+            {title === 'Nutrients' && selectedOptions.includes(option) && (
+              <input
+                type="text"
+                className="nutrient-input"
+                placeholder="Enter amount"
+                value={
+                  option === 'Calories (kcal):' ? calories : 
+                  option === 'Carbs (g):' ? carbs : 
+                  option === 'Protein (g):' ? protein : 
+                  fats
+                }
+                onChange={(e) => handleInputChange(option, e.target.value)}
+              />
+            )}
+          </div>
+        ))
       )}
     </div>
   );

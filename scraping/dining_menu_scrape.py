@@ -178,6 +178,11 @@ def scrape_data():
 def job():
     print("Running the scraping task...")
     scrape_data()
+    # Serialize the list of dictionaries to a JSON formatted string
+    tester = json.dumps(menu_data, indent=4)
+    # Write the serialized string to a file
+    with open("src/meal_data.json", "w") as outfile:
+        outfile.write(tester)
 
 
 # Schedule the job to run daily at 12:01 AM
