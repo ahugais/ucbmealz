@@ -4,11 +4,17 @@ import SelectionPanel from './components/SelectionPanel';
 import RecommendedMeal from './components/RecommendedMeal';
 import './App.css';
 
+// Import global variables from SelectionPanel.js
+import { selectedData } from './components/SelectionPanel';
+
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
 
   const handleMealGeneration = () => {
-    // Placeholder for meal generation logic
+    // Log the collected data to ensure it's captured correctly
+    console.log('Collected Data:', selectedData);
+
+    // Example alert (placeholder for actual meal generation logic)
     alert("Meal generated based on your selections!");
 
     // Clear all selections after generating the meal

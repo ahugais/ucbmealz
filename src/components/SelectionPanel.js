@@ -1,70 +1,106 @@
 import React, { useEffect, useState } from 'react';
 
-function SelectionPanel({ title, options, clearSelections }) {
+// Global variables to store selections and nutrient values
+export const selectedData = {
+  diningHall: '',
+  meal: '',
+  dietaryIncludes: [],
+  dietaryExcludes: [],
+  nutrients: {}
+};
+
+function SelectionPanel({ title, options, isInput, clearSelections }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [nutrientValues, setNutrientValues] = useState({});
 
+  const isMultiSelect = title === 'Dietary Restriction' || title === 'Nutrients';
+
   useEffect(() => {
-    // Clear selections and nutrient values when clearSelections is true
+    // Clear selections and input values when clearSelections is true
     if (clearSelections) {
       setSelectedOptions([]);
       setNutrientValues({});
+      resetGlobalVariables();
     }
   }, [clearSelections]);
 
-  const handleCheckboxChange = (option) => {
-    // For Dietary Restrictions and Nutrients: Multiple selections allowed
+  const resetGlobalVariables = () => {
+    if (title === 'Dining Halls') selectedData.diningHall = '';
+    if (title === 'Meal') selectedData.meal = '';
+    if (title === 'Dietary Restriction') {
+      selectedData.dietaryIncludes = [];
+      selectedData.dietaryExcludes = [];
+    }
+    if (title === 'Nutrients') selectedData.nutrients = {};
+  };
+
+  const handleCheckboxChange = (option, type) => {
     if (selectedOptions.includes(option)) {
+      // Deselect the option
       setSelectedOptions(selectedOptions.filter((item) => item !== option));
-      setNutrientValues((prevValues) => {
-        const updatedValues = { ...prevValues };
-        delete updatedValues[option]; // Remove value when deselected
-        return updatedValues;
-      });
+
+      // Update global variables for dietary restrictions
+      if (title === 'Dietary Restriction') {
+        if (type === 'includes') {
+          selectedData.dietaryIncludes = selectedData.dietaryIncludes.filter((item) => item !== option);
+        } else {
+          selectedData.dietaryExcludes = selectedData.dietaryExcludes.filter((item) => item !== option);
+        }
+      }
+
+      // Update global variables for nutrients
+      if (title === 'Nutrients') {
+        const updatedNutrients = { ...nutrientValues };
+        delete updatedNutrients[option];
+        selectedData.nutrients = updatedNutrients;
+        setNutrientValues(updatedNutrients);
+      }
     } else {
+      // Select the option
       setSelectedOptions([...selectedOptions, option]);
+
+      // Update global variables for dietary restrictions
+      if (title === 'Dietary Restriction') {
+        if (type === 'includes') {
+          selectedData.dietaryIncludes.push(option);
+        } else {
+          selectedData.dietaryExcludes.push(option);
+        }
+      }
     }
   };
 
   const handleRadioChange = (option) => {
-    // For Dining Halls and Meals: Only one selection allowed
     setSelectedOptions([option]);
+    if (title === 'Dining Halls') selectedData.diningHall = option;
+    if (title === 'Meal') selectedData.meal = option;
   };
 
   const handleInputChange = (option, value) => {
-    // Update nutrient values, allowing only numeric input
+    // Update the value for nutrients, allowing only numeric input
     if (/^\d*$/.test(value)) {
-      setNutrientValues({
-        ...nutrientValues,
-        [option]: value
-      });
+      const updatedNutrients = { ...nutrientValues, [option]: value };
+      setNutrientValues(updatedNutrients);
+      selectedData.nutrients = updatedNutrients;
     }
   };
-
-  // Options for 'Includes' and 'Excludes' in Dietary Restrictions
-  const includesOptions = ['Halal', 'Vegan', 'Vegetarian', 'Kosher'];
-  const excludesOptions = ['Milk', 'Gluten', 'Peanuts', 'Tree nuts'];
-
-  // Determine if the panel is for single or multiple selection
-  const isMultiSelect = title === 'Dietary Restriction' || title === 'Nutrients';
 
   return (
     <div className="panel">
       <h2>{title}</h2>
-
       {title === 'Dietary Restriction' ? (
         <div className="dietary-columns">
           {/* Includes Column */}
           <div className="dietary-column">
             <h3>Includes</h3>
-            {includesOptions.map((option, index) => (
+            {['Halal', 'Vegan', 'Vegetarian', 'Kosher'].map((option, index) => (
               <div key={index} className="option">
                 <input
                   type="checkbox"
                   id={option}
                   name="includes"
                   checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
+                  onChange={() => handleCheckboxChange(option, 'includes')}
                 />
                 <label htmlFor={option}>{option}</label>
               </div>
@@ -74,14 +110,14 @@ function SelectionPanel({ title, options, clearSelections }) {
           {/* Excludes Column */}
           <div className="dietary-column">
             <h3>Excludes</h3>
-            {excludesOptions.map((option, index) => (
+            {['Milk', 'Gluten', 'Peanuts', 'Tree nuts'].map((option, index) => (
               <div key={index} className="option">
                 <input
                   type="checkbox"
                   id={option}
                   name="excludes"
                   checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
+                  onChange={() => handleCheckboxChange(option, 'excludes')}
                 />
                 <label htmlFor={option}>{option}</label>
               </div>
@@ -96,9 +132,7 @@ function SelectionPanel({ title, options, clearSelections }) {
               id={option}
               name={title}
               checked={selectedOptions.includes(option)}
-              onChange={() => 
-                isMultiSelect ? handleCheckboxChange(option) : handleRadioChange(option)
-              }
+              onChange={() => isMultiSelect ? handleCheckboxChange(option) : handleRadioChange(option)}
             />
             <label htmlFor={option}>{option}</label>
 
