@@ -3,8 +3,9 @@ import Header from './components/Header';
 import SelectionPanel from './components/SelectionPanel';
 import RecommendedMeal from './components/RecommendedMeal';
 import './App.css';
+import { selectedData } from './data.js';
 
-// Global variables to store selections and nutrient values
+/* Global variables to store selections and nutrient values
 export const selectedData = {
   diningHall: ["Crossroads", "Cafe 3", "Clark Kerr", "Foothill"],
   meal: '',
@@ -14,7 +15,7 @@ export const selectedData = {
   carbs: '',
   protein: '',
   fats: ''
-};
+};*/
 
 function App() {
   const [clearSelections, setClearSelections] = useState(false);
