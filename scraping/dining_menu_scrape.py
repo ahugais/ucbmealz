@@ -184,7 +184,7 @@ def job():
     with open("src/meal_data.json", "w") as outfile:
         outfile.write(tester)
 
-
+job()
 # Schedule the job to run daily at 12:01 AM
 schedule.every().day.at("00:01").do(job)
 
